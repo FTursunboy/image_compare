@@ -14,8 +14,16 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
+    return view('index');
+})->name('index');
+Route::get('/setting', function () {
+    return view('setting');
+})->name('setting');
+Route::get('/file', function () {
     return view('welcome');
-});
+})->name('welcome');
 
 Route::get('/c', [\App\Http\Controllers\Controller::class, 'index']);
 Route::post('/upload', [\App\Http\Controllers\FileUploader::class, 'upload'])->name('file.store');
+Route::post('/compare', [\App\Http\Controllers\FileUploader::class, 'compare'])->name('file.compare');
+Route::post('/setting', [\App\Http\Controllers\FileUploader::class, 'setting'])->name('settings');
