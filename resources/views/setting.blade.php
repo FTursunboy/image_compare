@@ -43,7 +43,7 @@
                 <h2>Установите процент схожости при котором выведется картинки </h2>
             </div>
             <div>
-                <form action="{{ route('welcome') }}" method="POST" enctype="multipart/form-data">
+                <form action="{{ route('settings') }}" method="POST" enctype="multipart/form-data">
                     @csrf
                     <div class="mb-3">
                         <label class="form-label">Процент:</label>

@@ -81,7 +81,7 @@ class FileUploader extends BaseController
         $s->percent = $request->percent;
         $s->save();
 
-        return redirect()->route('index');
+        return redirect()->route('welcome');
     }
 
 
