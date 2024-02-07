@@ -22,9 +22,10 @@ class FileUploader extends BaseController
         if ($request->file('files')) {
             foreach ($request->file('files') as $key => $file) {
                 $file_name = time() . rand(1, 99) . '.' . $file->extension();
+                $original_name = $file->getClientOriginalName();
                 $file->move(public_path('uploads'), $file_name);
                 $path = 'uploads/' . $file_name;
-                $files[] = ['path' => $path];
+                $files[] = ['path' => $path, 'file_name' => $original_name];
             }
         }
 
@@ -35,7 +36,9 @@ class FileUploader extends BaseController
 
             \App\Models\Image::create([
                 'img_path' => $file['path'],
-                'hash' =>  $hash,
+                'file_name' => $file['file_name'],
+                "category_id" => $request->category_id,
+                'hash' => $hash,
             ]);
         }
 
@@ -43,50 +46,84 @@ class FileUploader extends BaseController
     }
 
 
-
     public function compare(Request $request)
-        {
-            if ($request->hasFile('file')) {
-                $file = $request->file('file');
-                $hasher = new ImageHash(new DifferenceHash());
-                $hashToCompare = $hasher->hash($file->get());
+    {
 
-                $threshold = Setting::first()->percent;
-                $similarImages = [];
+        if ($request->hasFile('file')) {
+            $file = $request->file('file');
+            $hasher = new ImageHash(new DifferenceHash());
+            $hashToCompare = $hasher->hash($file->get());
 
-                $databaseHashes = \App\Models\Image::get()->toArray();
+            $similarImages = [];
+
+            $databaseHashes = \App\Models\Image::where('category_id', $request->category_id)->get()->toArray();
 
 
-                foreach ($databaseHashes as $databaseHash) {
+            foreach ($databaseHashes as $databaseHash) {
+                $distance = $hasher->distance($hashToCompare, $databaseHash['hash']);
+                $digit = mt_rand(1, 2) / 100;
 
-                    $distance = $hasher->distance($hashToCompare, $databaseHash['hash']);
-                    $percentSimilarity = (1 - $distance / 35) * 100;
+                $percentSimilarity = ((1 - $distance / 35) * 100) - $digit;
 
-                    if ($percentSimilarity > $threshold) {
-                        $similarImages[] = [
-                            'img' => $databaseHash['img_path'],
-                            'percent' => $percentSimilarity
-                        ];
-                    }
-                }
 
-                usort($similarImages, function ($a, $b) {
-                    return $b['percent'] <=> $a['percent'];
-                });
-                return view('welcome', ['images' => $similarImages]);
+
+                $similarImages[] = [
+                    'img' => $databaseHash['img_path'],
+                    'file_name' => $databaseHash['file_name'],
+                    'percent' => $percentSimilarity
+                ];
             }
 
-            return view('welcome');
+            usort($similarImages, function ($a, $b) {
+                return $b['percent'] <=> $a['percent'];
+            });
+
+
+            return view('welcome', ['images' => $similarImages, 'hash' => $hashToCompare]);
         }
 
+        return view('welcome');
+    }
 
-    public function setting(Request $request) {
+
+    public function setting(Request $request)
+    {
         $s = Setting::first();
 
         $s->percent = $request->percent;
         $s->save();
 
         return redirect()->route('welcome');
+    }
+
+
+    public function cutImageArray($hash, $count)
+    {
+        $databaseHashes = \App\Models\Image::where('category_id', 1)->get()->toArray();
+        $hasher = new ImageHash(new DifferenceHash());
+
+        foreach ($databaseHashes as $databaseHash) {
+            $distance = $hasher->distance($hash, $databaseHash['hash']);
+            $digit = mt_rand(1, 2) / 100;
+
+
+
+            $percentSimilarity = ((1 - $distance / 35) * 100) - $digit;
+
+
+
+            $similarImages[] = [
+                'img' => $databaseHash['img_path'],
+                'file_name' => $databaseHash['file_name'],
+                'percent' => $percentSimilarity
+            ];
+        }
+
+        usort($similarImages, function ($a, $b) {
+            return $b['percent'] <=> $a['percent'];
+        });
+
+
     }
 
 

@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\Category;
 use App\Models\Setting;
 use Illuminate\Database\Seeder;
 
@@ -22,6 +23,12 @@ class DatabaseSeeder extends Seeder
 
         Setting::create([
             'percent' => 94
+        ]);
+
+        Category::insert([
+            ['name' => 'Кольца'],
+            ['name' => 'Сережки'],
+            ['name' => 'Цепочки']
         ]);
     }
 }

@@ -58,6 +58,13 @@
                         @error('files')
                         <span class="text-danger">{{ $message }}</span>
                         @enderror
+
+                        <label for="">Выберите категорию</label>
+                        <select class="form-control" name="category_id">
+                            @foreach($categories as $category)
+                                <option value="{{$category->id}}">{{$category->name}}</option>
+                            @endforeach
+                        </select>
                     </div>
                     <div class="mb-3">
                         <button type="submit" class="btn btn-success">Отправить</button>
