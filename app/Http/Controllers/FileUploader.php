@@ -41,38 +41,38 @@ class FileUploader extends BaseController
 
         return back()->with('success', 'Файлы успешны загружены');
     }
-    public function compare(Request $request)
-    {
-        if ($request->hasFile('file')) {
-            $file = $request->file('file');
-            $hasher = new ImageHash(new DifferenceHash());
-            $hashToCompare = $hasher->hash($file->get());
+        public function compare(Request $request)
+        {
+            if ($request->hasFile('file')) {
+                $file = $request->file('file');
+                $hasher = new ImageHash(new DifferenceHash());
+                $hashToCompare = $hasher->hash($file->get());
 
-            $threshold = Setting::first()->percent;
-            $similarImages = [];
+                $threshold = Setting::first()->percent;
+                $similarImages = [];
 
-            $databaseHashes = \App\Models\Image::get()->toArray();
+                $databaseHashes = \App\Models\Image::get()->toArray();
 
 
-            foreach ($databaseHashes as $databaseHash) {
+                foreach ($databaseHashes as $databaseHash) {
 
-                $distance = $hasher->distance($hashToCompare, $databaseHash['hash']);
-                $percentSimilarity = (1 - $distance / 35) * 100;
+                    $distance = $hasher->distance($hashToCompare, $databaseHash['hash']);
+                    $percentSimilarity = (1 - $distance / 35) * 100;
 
-                if ($percentSimilarity > $threshold) {
-                    $similarImages[] = [
-                        'img' => $databaseHash['img_path'],
-                        'percent' => $percentSimilarity
-                    ];
+                    if ($percentSimilarity > $threshold) {
+                        $similarImages[] = [
+                            'img' => $databaseHash['img_path'],
+                            'percent' => $percentSimilarity
+                        ];
+                    }
                 }
-            }
 
-            usort($similarImages, function ($a, $b) {
-                return $b['percent'] <=> $a['percent'];
-            });
-            return view('welcome', ['images' => $similarImages]);
+                usort($similarImages, function ($a, $b) {
+                    return $b['percent'] <=> $a['percent'];
+                });
+                return view('welcome', ['images' => $similarImages]);
+            }
         }
-    }
 
 
     public function setting(Request $request) {

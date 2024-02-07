@@ -67,7 +67,7 @@
         <div class="panel-body">
 
                 @foreach($images as $image)
-                    <img width="400" style="border: 1px solid black" height="600" src="{{ asset($image['img']) }}" alt="Image" >
+                    <img  style="border: 1px solid black; max-height: 500px; max-width: 500px" src="{{ asset($image['img']) }}" alt="Image" >
                 @endforeach
 
 
