@@ -40,7 +40,7 @@
   <div class="container">
         <div  class="panel panel-primary">
             <div style="margin-top: 160px"  class="panel-heading">
-                <h2>Можете отправить картинки</h2>
+                <h2>Сначала загрузите картинки </h2>
             </div>
             <div class="panel-body">
                 @if ($message = Session::get('success'))

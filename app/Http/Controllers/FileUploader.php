@@ -3,10 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Setting;
-use Dflydev\DotAccessData\Data;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Validation\ValidatesRequests;
-
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller as BaseController;
 use Jenssegers\ImageHash\ImageHash;
@@ -17,8 +15,6 @@ class FileUploader extends BaseController
 {
     use AuthorizesRequests, ValidatesRequests;
 
-    // Контроллер для обработки загрузки файлов
-
     public function upload(Request $request)
     {
         $files = [];
@@ -28,7 +24,7 @@ class FileUploader extends BaseController
                 $file_name = time() . rand(1, 99) . '.' . $file->extension();
                 $file->move(public_path('uploads'), $file_name);
                 $path = 'uploads/' . $file_name;
-                $files[] = ['name' => $file_name, 'path' => $path];
+                $files[] = ['path' => $path];
             }
         }
 
@@ -39,7 +35,7 @@ class FileUploader extends BaseController
 
             \App\Models\Image::create([
                 'img_path' => $file['path'],
-                'hash' =>  $hash, // Сериализуем объект хеша перед сохранением
+                'hash' =>  $hash,
             ]);
         }
 
@@ -74,7 +70,7 @@ class FileUploader extends BaseController
             usort($similarImages, function ($a, $b) {
                 return $b['percent'] <=> $a['percent'];
             });
-            return view('welcome', ['images' => $similarImages, 'your_img' => $file]);
+            return view('welcome', ['images' => $similarImages]);
         }
     }
 
@@ -82,14 +78,10 @@ class FileUploader extends BaseController
     public function setting(Request $request) {
         $s = Setting::first();
 
-
         $s->percent = $request->percent;
         $s->save();
 
         return redirect()->route('index');
-
-
-
     }
 
 
