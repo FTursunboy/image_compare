@@ -41,7 +41,10 @@ class FileUploader extends BaseController
 
         return back()->with('success', 'Файлы успешны загружены');
     }
-        public function compare(Request $request)
+
+
+
+    public function compare(Request $request)
         {
             if ($request->hasFile('file')) {
                 $file = $request->file('file');
@@ -72,6 +75,8 @@ class FileUploader extends BaseController
                 });
                 return view('welcome', ['images' => $similarImages]);
             }
+
+            return view('welcome');
         }
 
 
