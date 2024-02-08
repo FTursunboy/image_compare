@@ -30,12 +30,12 @@ class FileUploader extends BaseController
             }
         }
 
-        $hasher = new ImageHash(new DifferenceHash(32));
+        $hasher = new ImageHash(new DifferenceHash());
 
         foreach ($files as $key => $file) {
             $hash = $hasher->hash(public_path($file['path']));
 
-            \App\Models\RecalculatedImages::create([
+            \App\Models\Image::create([
                 'img_path' => $file['path'],
                 'file_name' => $file['file_name'],
                 "category_id" => $request->category_id,
@@ -52,12 +52,12 @@ class FileUploader extends BaseController
 
         if ($request->hasFile('file')) {
             $file = $request->file('file');
-            $hasher = new ImageHash(new DifferenceHash(32));
+            $hasher = new ImageHash(new DifferenceHash());
             $hashToCompare = $hasher->hash($file->get());
 
             $similarImages = [];
 
-            $databaseHashes = \App\Models\RecalculatedImages::where('category_id', $request->category_id)->get()->toArray();
+            $databaseHashes = \App\Models\Image::where('category_id', $request->category_id)->get()->toArray();
 
 
             foreach ($databaseHashes as $databaseHash) {
@@ -66,7 +66,7 @@ class FileUploader extends BaseController
 
                 $percentSimilarity = ((1 - $distance / 35) * 100) - $digit;
 
-                if ($percentSimilarity > 50) {
+                if ($percentSimilarity > 10) {
                     $similarImages[] = [
                         'img' => $databaseHash['img_path'],
                         'file_name' => $databaseHash['file_name'],
