@@ -27,4 +27,5 @@ Route::get('/c', [\App\Http\Controllers\Controller::class, 'index']);
 Route::post('/upload', [\App\Http\Controllers\FileUploader::class, 'upload'])->name('file.store');
 Route::post('/compare', [\App\Http\Controllers\FileUploader::class, 'compare'])->name('file.compare');
 Route::post('/setting', [\App\Http\Controllers\FileUploader::class, 'setting'])->name('settings');
+Route::get('/change', [\App\Http\Controllers\FileUploader::class, 'change'])->name('change');
 Route::get('/cutImages/{hash}/{count}', [\App\Http\Controllers\FileUploader::class, 'cutImageArray'])->name('cutImage');
