@@ -51,7 +51,7 @@ class FileUploader extends BaseController
 
         if ($request->hasFile('file')) {
             $file = $request->file('file');
-            $hasher = new ImageHash(new DifferenceHash(32));
+            $hasher = new ImageHash(new DifferenceHash());
             $hashToCompare = $hasher->hash($file->get());
 
             $similarImages = [];
