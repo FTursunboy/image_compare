@@ -29,7 +29,7 @@ class FileUploader extends BaseController
             }
         }
 
-        $hasher = new ImageHash(new DifferenceHash());
+        $hasher = new ImageHash(new DifferenceHash(32));
 
         foreach ($files as $key => $file) {
             $hash = $hasher->hash(public_path($file['path']));
@@ -51,7 +51,7 @@ class FileUploader extends BaseController
 
         if ($request->hasFile('file')) {
             $file = $request->file('file');
-            $hasher = new ImageHash(new DifferenceHash());
+            $hasher = new ImageHash(new DifferenceHash(32));
             $hashToCompare = $hasher->hash($file->get());
 
             $similarImages = [];
