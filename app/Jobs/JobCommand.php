@@ -27,7 +27,7 @@ class JobCommand implements ShouldQueue
      */
     public function handle(): void
     {
-        sleep(10);
+
         $images = \App\Models\Image::get();
 
         foreach ($images as $image) {
@@ -35,17 +35,16 @@ class JobCommand implements ShouldQueue
 
             $hasher = new ImageHash(new DifferenceHash(32));
 
-            if (file_exists($image->img_path)) {
-                $hash = $hasher->hash($image->img_path);
 
+            $hash = $hasher->hash($image->img_path);
 
-                \App\Models\RecalculatedImages::create([
-                    'img_path' => $image->img_path,
-                    'file_name' => $image->file_name,
-                    "category_id" => $image->category_id,
-                    'hash' => $hash,
-                ]);
-            }
+            \App\Models\RecalculatedImages::create([
+                'img_path' => $image->img_path,
+                'file_name' => $image->file_name,
+                "category_id" => $image->category_id,
+                'hash' => $hash,
+            ]);
+
         }
     }
 }
