@@ -36,7 +36,7 @@ class JobCommand implements ShouldQueue
             $hasher = new ImageHash(new DifferenceHash(32));
 
             if (file_exists(public_path($image->img_path))) {
-                $hash = $hasher->hash($image->img_path);
+                $hash = $hasher->hash(public_path($image->img_path));
 
                 \App\Models\RecalculatedImages::create([
                     'img_path' => $image->img_path,
