@@ -63,15 +63,16 @@ class FileUploader extends BaseController
                 $distance = $hasher->distance($hashToCompare, $databaseHash['hash']);
                 $digit = mt_rand(1, 2) / 100;
 
+
                 $percentSimilarity = ((1 - $distance / 35) * 100) - $digit;
 
-
-
-                $similarImages[] = [
-                    'img' => $databaseHash['img_path'],
-                    'file_name' => $databaseHash['file_name'],
-                    'percent' => $percentSimilarity
-                ];
+                if ($percentSimilarity > 60) {
+                    $similarImages[] = [
+                        'img' => $databaseHash['img_path'],
+                        'file_name' => $databaseHash['file_name'],
+                        'percent' => $percentSimilarity
+                    ];
+                }
             }
 
             usort($similarImages, function ($a, $b) {
