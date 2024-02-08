@@ -19,6 +19,15 @@ class JobCommand implements ShouldQueue
      */
     public function __construct()
     {
+
+    }
+
+    /**
+     * Execute the job.
+     */
+    public function handle(): void
+    {
+        sleep(10);
         $images = \App\Models\Image::get();
 
         foreach ($images as $image) {
@@ -38,13 +47,5 @@ class JobCommand implements ShouldQueue
                 ]);
             }
         }
-    }
-
-    /**
-     * Execute the job.
-     */
-    public function handle(): void
-    {
-        //
     }
 }
