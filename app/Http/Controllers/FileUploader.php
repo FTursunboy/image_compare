@@ -61,7 +61,7 @@ class FileUploader extends BaseController
 
             foreach ($databaseHashes as $databaseHash) {
                 $distance = $hasher->distance($hashToCompare, $databaseHash['hash']);
-                $digit = mt_rand(1, 2) / 100;
+                $digit = 0.1;
 
 
                 $percentSimilarity = ((1 - $distance / 35) * 100) - $digit;
