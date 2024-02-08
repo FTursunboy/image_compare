@@ -34,17 +34,17 @@ class JobCommand implements ShouldQueue
 
 
             $hasher = new ImageHash(new DifferenceHash(32));
+                dump($image->category_id);
 
-            if (file_exists(public_path($image->img_path))) {
-                $hash = $hasher->hash(public_path($image->img_path));
-
-                \App\Models\RecalculatedImages::create([
+              $i =  \App\Models\RecalculatedImages::create([
                     'img_path' => $image->img_path,
                     'file_name' => $image->file_name,
                     "category_id" => $image->category_id,
-                    'hash' => $hash,
+                    'hash' => 123,
                 ]);
-            }
+                dump($i);
+                dd(1);
+
         }
     }
 }
