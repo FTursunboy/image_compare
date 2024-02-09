@@ -29,3 +29,4 @@ Route::post('/compare', [\App\Http\Controllers\FileUploader::class, 'compare'])-
 Route::post('/setting', [\App\Http\Controllers\FileUploader::class, 'setting'])->name('settings');
 Route::get('/change', [\App\Http\Controllers\FileUploader::class, 'change'])->name('change');
 Route::get('/cutImages/{hash}/{count}', [\App\Http\Controllers\FileUploader::class, 'cutImageArray'])->name('cutImage');
+Route::get('/123', [\App\Http\Controllers\ApiController::class, 'index'])->name('cutImage');

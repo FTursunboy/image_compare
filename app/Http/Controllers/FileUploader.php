@@ -49,7 +49,6 @@ class FileUploader extends BaseController
 
     public function compare(Request $request)
     {
-
         if ($request->hasFile('file')) {
             $file = $request->file('file');
             $hasher = new ImageHash(new DifferenceHash());
@@ -58,7 +57,6 @@ class FileUploader extends BaseController
             $similarImages = [];
 
             $databaseHashes = \App\Models\Image::where('category_id', $request->category_id)->get()->toArray();
-
 
             foreach ($databaseHashes as $databaseHash) {
                 $distance = $hasher->distance($hashToCompare, $databaseHash['hash']);
