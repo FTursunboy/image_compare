@@ -31,12 +31,16 @@ class ApiController extends BaseController
                 $files[] = ['path' => $path, 'file_name' => $original_name];
             }
         }
+        $hasher = new ImageHash(new DifferenceHash());
 
         foreach ($files as $key => $file) {
+
+            $hash = $hasher->hash(public_path($file['path']));
 
             $image =\App\Models\Image::create([
                 'img_path' => $file['path'],
                 'file_name' => $file['file_name'],
+                'hash' => $hash,
                 'category_id' => $request->category_id,
                 'unique_number' => rand(10000000, 99999999) . round(microtime(true) * 1000) . '.jpg'
             ]);
@@ -77,7 +81,9 @@ class ApiController extends BaseController
         if ($request->hasFile('file')) {
             $file = $request->file('file');
             $file_name = time() . rand(1, 99);
+
             $file->move(public_path('uploads'), $file_name);
+            $original_name = $file->getClientOriginalName();
             $path = 'uploads/' . $file_name;
 
             $imagePath = public_path($path);
@@ -112,7 +118,7 @@ class ApiController extends BaseController
                         ];
                     }
                 }
-                return view('welcome', ['images' => $similarImages, 'image' => $path]);
+                return view('welcome', ['images' => $similarImages, 'image' => $path, 'name' => $original_name]);
             }
             else {
                 return redirect()->back()->with('error', 'Превышен лимит запросов');

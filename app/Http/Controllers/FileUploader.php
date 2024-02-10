@@ -54,7 +54,7 @@ class FileUploader extends BaseController
             $file = $request->file('file');
             $hasher = new ImageHash(new DifferenceHash());
             $hashToCompare = $hasher->hash($file->get());
-
+            $original_name = $file->getClientOriginalName();
             $file_name = time() . rand(1, 99);
             $file->move(public_path('uploads'), $file_name);
             $path = 'uploads/' . $file_name;
@@ -73,7 +73,7 @@ class FileUploader extends BaseController
 
                 $percentSimilarity = ((1 - $distance / 35) * 100) - $digit;
 
-                if ($percentSimilarity > 10) {
+                if ($percentSimilarity > 60) {
                     $similarImages[] = [
                         'img' => $databaseHash['img_path'],
                         'file_name' => $databaseHash['file_name'],
@@ -87,7 +87,7 @@ class FileUploader extends BaseController
             });
 
 
-            return view('welcome', ['images' => $similarImages, 'image' => $path]);
+            return view('welcome', ['images' => $similarImages, 'image' => $path, 'name' => $original_name]);
         }
 
         return view('welcome');

@@ -30,7 +30,10 @@
                 <a  class="nav-link" href="{{route('index')}}">Главная </a>
             </li>
             <li class="nav-item active">
-                <a class="nav-link" href="{{route('welcome')}}">Сравнение картинок</a>
+                <a class="nav-link" href="{{route('welcome')}}">Сравнение картинок с ии</a>
+            </li>
+            <li class="nav-item active">
+                <a class="nav-link" href="{{route('welcome.hash')}}">Сравнение картинок с хешом</a>
             </li>
         </ul>
     </div>
@@ -64,7 +67,7 @@
                             <option value="{{$category->id}}">{{$category->name}}</option>
                         @endforeach
                     </select>
-                    <label  style="margin-top: 30px" class="form-label">Выберите файл для сравнения</label>
+                    <label  style="margin-top: 30px" class="form-label">Выберите файл для сравнения (ИИ) </label>
                     <input type="file" name="file" class="form-control @error('files') is-invalid @enderror">
 
                     @error('files')
@@ -82,7 +85,8 @@
         @if(isset($image))
         <div class="panell" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px">
             <div  style="border: 2px solid #CCB399FF; border-radius: 8px; padding: 10px">
-                <p><strong>Ваше изображение</strong></p>
+                <p><strong>Ваше изображение:</strong> {{$name}}</span></p>
+
                 <img style="max-height: 400px; max-width: 30%;" src="{{ asset($image) }}" alt="Image">
             </div>
         </div>

@@ -26,6 +26,9 @@
                   <li class="nav-item active">
                       <a class="nav-link" href="{{route('welcome')}}">Сравнение картинок</a>
                   </li>
+                  <li class="nav-item active">
+                      <a class="nav-link" href="{{route('welcome.hash')}}">Сравнение картинок с хешом</a>
+                  </li>
               </ul>
           </div>
       </div>
