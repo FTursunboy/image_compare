@@ -55,7 +55,7 @@ class JobCommand implements ShouldQueue
 
             $response = Http::withHeaders([
                 'accept' => 'application/json',
-                'authorization' => 'Bearer твой_токен',
+                'authorization' => 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiYTJjMDJkNGEtZjgwNC00M2UxLThhNzQtMjAzZGViNWVlYTk0IiwidHlwZSI6ImFwaV90b2tlbiJ9.iP-Ga-VPn1TmjfiA0qLAO_4Y5lgJ4-ZppRkw7uDsWGI',
             ])
                 ->attach('file', $file, 'test.jpg', ['Content-Type' => 'multipart/form-data'])
                 ->timeout(657384573485730)
