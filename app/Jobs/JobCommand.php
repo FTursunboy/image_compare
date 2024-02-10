@@ -29,7 +29,7 @@ class JobCommand implements ShouldQueue
     public function handle(): void
     {
 
-        $images = \App\Models\Image::get();
+        $images = \App\Models\Image::where('id', '>', 431)->get();
 
         foreach ($images as $image) {
 
@@ -53,7 +53,7 @@ class JobCommand implements ShouldQueue
             }
 
 
-            Http::withHeaders([
+           $response =  Http::withHeaders([
                 'accept' => 'application/json',
                 'authorization' => 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiYTJjMDJkNGEtZjgwNC00M2UxLThhNzQtMjAzZGViNWVlYTk0IiwidHlwZSI6ImFwaV90b2tlbiJ9.iP-Ga-VPn1TmjfiA0qLAO_4Y5lgJ4-ZppRkw7uDsWGI',
             ])
@@ -62,6 +62,9 @@ class JobCommand implements ShouldQueue
                     'providers' => 'sentisight',
                     'image_name' => $newFilename
                 ]);
+            if ($response->successful()) {
+                $image->sent = true;
+            }
 
 
         }
