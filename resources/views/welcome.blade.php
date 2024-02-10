@@ -79,8 +79,14 @@
     </div>
 
     <div class="panel panel-primary">
-
-
+        @if(isset($image))
+        <div class="panell" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px">
+            <div  style="border: 2px solid #CCB399FF; border-radius: 8px; padding: 10px">
+                <p><strong>Ваше изображение</strong></p>
+                <img style="max-height: 400px; max-width: 30%;" src="{{ asset($image) }}" alt="Image">
+            </div>
+        </div>
+        @endif
         @if(isset($images))
         <h3 style="margin-bottom: 20px">Похожие изображения: {{count($images)}}</h3>
             <div class="d-flex gap-3" style="margin-bottom: 20px">

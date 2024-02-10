@@ -112,7 +112,7 @@ class ApiController extends BaseController
                         ];
                     }
                 }
-                return view('welcome', ['images' => $similarImages]);
+                return view('welcome', ['images' => $similarImages, 'image' => $path]);
             }
             else {
                 return redirect()->back()->with('error', 'Превышен лимит запросов');
