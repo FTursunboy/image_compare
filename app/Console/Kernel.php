@@ -12,8 +12,9 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule): void
     {
-        $schedule->call('send:image')->everyMinute();
+        $schedule->command('send:image')->everyMinute();
     }
+
 
     /**
      * Register the commands for the application.
