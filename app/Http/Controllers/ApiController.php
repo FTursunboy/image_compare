@@ -60,6 +60,9 @@ class ApiController extends BaseController
                 $image->save();
 
             }
+            else {
+                return back()->with('error', 'Превышен лимит запросов');
+            }
 
         }
         return back()->with('success', 'Файлы успешны загружены');
