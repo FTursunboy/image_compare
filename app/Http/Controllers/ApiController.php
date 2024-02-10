@@ -90,9 +90,10 @@ class ApiController extends BaseController
             // Генерируем уникальное имя файла
             $original_name = $file->getClientOriginalName();
             $file_name = time() . rand(1, 99);
+            $newImage = \Intervention\Image\Facades\Image::canvas($image->width(), $image->height(), '#ffffff');
 
-
-            $image->fill([255, 255, 255])->save(public_path('uploads/' . $file_name . '.jpg'));
+            // Налагаем оригинальное изображение на новый белый фон
+            $newImage->insert($image, 'center');
 
             $path = 'uploads/' . $file_name . '.jpg';
 
