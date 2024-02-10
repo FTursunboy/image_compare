@@ -50,27 +50,14 @@ class FileUploader extends BaseController
 
     public function compare(Request $request)
     {
-        $file = $request->file('file');
-
-        // Создаем экземпляр Image с использованием библиотеки Intervention Image
-        $image = \Intervention\Image\Facades\Image::make($file->get());
-
-
-        $image->brightness(20);
-
-        // Получаем хэш изображения
-        $hasher = new ImageHash(new DifferenceHash());
-        $hashToCompare = $hasher->hash($image->encode());
-
-        // Генерируем уникальное имя файла
-        $original_name = $file->getClientOriginalName();
-        $file_name = time() . rand(1, 99);
-
-
-        $image->fill([255, 255, 255])->save(public_path('uploads/fil/' . $file_name . '.jpg'));
-
-        $path = 'uploads/fil/' . $file_name . '.jpg';
-
+        if ($request->hasFile('file')) {
+            $file = $request->file('file');
+            $hasher = new ImageHash(new DifferenceHash());
+            $hashToCompare = $hasher->hash($file->get());
+            $original_name = $file->getClientOriginalName();
+            $file_name = time() . rand(1, 99);
+            $file->move(public_path('uploads'), $file_name);
+            $path = 'uploads/' . $file_name;
 
             $similarImages = [];
 
