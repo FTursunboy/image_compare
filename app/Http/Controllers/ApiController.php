@@ -128,8 +128,8 @@ class ApiController extends BaseController
 
                 if ($image) {
                     $similarImages[] = [
-                        'img_path' => $image->img_path,
-                        'image_name' => $image->file_name,
+                        'img' => $image->img_path,
+                        'file_name' => $image->file_name,
                         'percent' => $res['score']
                     ];
                 }
