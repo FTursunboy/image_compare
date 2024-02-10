@@ -18,7 +18,6 @@ class FileUploader extends BaseController
 
     public function upload(Request $request)
     {
-        $files = [];
 
         if ($request->file('files')) {
             foreach ($request->file('files') as $key => $file) {
