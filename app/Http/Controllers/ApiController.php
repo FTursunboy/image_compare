@@ -98,6 +98,8 @@ class ApiController extends BaseController
 
             if ($response->successful()) {
 
+                dump($response);
+                dd($response->json());
                 $result = $response->json()['sentisight']['items'];
 
 
