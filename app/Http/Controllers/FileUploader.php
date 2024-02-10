@@ -19,7 +19,6 @@ class FileUploader extends BaseController
 
     public function upload(Request $request)
     {
-
         if ($request->file('files')) {
             foreach ($request->file('files') as $key => $file) {
                 $file_name = time() . rand(1, 99) . '.' . $file->extension();
@@ -40,8 +39,8 @@ class FileUploader extends BaseController
                 'file_name' => $file['file_name'],
                 "category_id" => $request->category_id,
                 'hash' => $hash,
+                'unique_number' => rand(10000000, 99999999) . round(microtime(true) * 1000) . '.jpg'
             ]);
-
 
         }
 
@@ -55,6 +54,11 @@ class FileUploader extends BaseController
             $file = $request->file('file');
             $hasher = new ImageHash(new DifferenceHash());
             $hashToCompare = $hasher->hash($file->get());
+
+            $file_name = time() . rand(1, 99);
+            $file->move(public_path('uploads'), $file_name);
+            $path = 'uploads/' . $file_name;
+
 
             $similarImages = [];
 
@@ -80,7 +84,7 @@ class FileUploader extends BaseController
             });
 
 
-            return view('welcome', ['images' => $similarImages, 'hash' => $hashToCompare]);
+            return view('welcome', ['images' => $similarImages, 'image' => $path]);
         }
 
         return view('welcome');
