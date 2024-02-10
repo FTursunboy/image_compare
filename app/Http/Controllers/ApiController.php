@@ -104,7 +104,7 @@ class ApiController extends BaseController
                 foreach ($result as $res) {
                     $image = \App\Models\Image::where([
                         ['unique_number', $res['image_name']],
-                        ['category_id' => $request->category_id]
+                        ['category_id', $request->category_id]
                             ])->first();
 
                     if ($image) {
