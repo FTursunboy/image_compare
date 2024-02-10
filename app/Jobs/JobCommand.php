@@ -29,7 +29,7 @@ class JobCommand implements ShouldQueue
     public function handle(): void
     {
 
-        $images = \App\Models\Image::get();
+        $images = \App\Models\Image::where('sent', false)->get();
 
         foreach ($images as $image) {
 
