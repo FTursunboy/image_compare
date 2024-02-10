@@ -120,18 +120,18 @@ class ApiController extends BaseController
                 ->post('https://api.edenai.run/v2/image/search/launch_similarity', [
                     'providers' => 'sentisight',
                 ]);
-            dump($response->json());
-
             $result = $response['sentisight']['items'];
 
-            dd($result);
+
             foreach ($result as $res) {
                 $image = \App\Models\Image::where('unique_number', $res['image_name'])->first();
-                 $similarImages[] = [
-                     'img_path' => $image->img_path,
-                     'image_name' => $image->file_name,
-                     'percent' => $res['score']
-                 ];
+                if (!$image) {
+                    $similarImages[] = [
+                        'img_path' => $image->img_path,
+                        'image_name' => $image->file_name,
+                        'percent' => $res['score']
+                    ];
+                }
             }
 
             dd($similarImages);
