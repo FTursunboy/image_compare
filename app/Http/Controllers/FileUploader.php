@@ -73,7 +73,7 @@ class FileUploader extends BaseController
 
                 $percentSimilarity = ((1 - $distance / 35) * 100) - $digit;
 
-                if ($percentSimilarity > 60) {
+                if ($percentSimilarity > 70) {
                     $similarImages[] = [
                         'img' => $databaseHash['img_path'],
                         'file_name' => $databaseHash['file_name'],
