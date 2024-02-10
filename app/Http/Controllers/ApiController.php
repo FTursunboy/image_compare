@@ -86,8 +86,6 @@ class ApiController extends BaseController
             // Убираем фон, делаем его белым, центрируем и обрезаем
             $image->trim()->resizeCanvas($image->width(), $image->height(), 'center', false, '#ffffff');
 
-            // Нормализуем цвета (точка белого и точка черного)
-            $image->normalize();
 
             // Обесцвечиваем изображение
             $image->greyscale();
