@@ -44,13 +44,12 @@ class ApiController extends BaseController
                 'img_path' => $file['path'],
                 'file_name' => $file['file_name'],
                 'category_id' => $request->category_id,
-                'sent' => true
+                'unique_number' => rand(10000000, 99999999) . round(microtime(true) * 1000) . '.jpg'
             ]);
 
             $imagePath = public_path($image->img_path);
 
             $file = \Illuminate\Support\Facades\File::get($imagePath);
-
 
             $originalFilename = $image->file_name;
 
@@ -78,6 +77,10 @@ class ApiController extends BaseController
                     'providers' => 'sentisight',
                     'image_name' => $newFilename
                 ]);
+            if ($response->successful()) {
+                $image->sent = true;
+                $image->save();
+            }
             dump($response->json());
         }
 
