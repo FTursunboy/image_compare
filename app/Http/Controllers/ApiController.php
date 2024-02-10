@@ -97,8 +97,10 @@ class ApiController extends BaseController
                 ]);
 
             if ($response->successful()) {
+                dump($response);
                 $result = $response['sentisight']['items'];
-
+                dump($response->json()['sentisight']['items']);
+                dd($result);
 
                 foreach ($result as $res) {
                     $image = \App\Models\Image::where([
