@@ -29,29 +29,13 @@ class JobCommand implements ShouldQueue
     public function handle(): void
     {
 
-        $images = \App\Models\Image::where('id', '>', 469)->get();
+        $images = \App\Models\Image::get();
 
         foreach ($images as $image) {
 
             $imagePath = public_path($image->img_path);
 
             $file = \Illuminate\Support\Facades\File::get($imagePath);
-
-            $originalFilename = $image->file_name;
-
-
-            $cleanedFilename = str_replace('.', '', $image->file_name);
-            $cleanedFilename = strtolower($cleanedFilename);
-
-
-            $extension = pathinfo($originalFilename, PATHINFO_EXTENSION);
-
-            if (!empty($extension)) {
-                $newFilename = substr_replace($cleanedFilename, '.', -strlen($extension), 0);
-            } else {
-                $newFilename = $cleanedFilename;
-            }
-
 
             $response = Http::withHeaders([
                 'accept' => 'application/json',
@@ -61,7 +45,7 @@ class JobCommand implements ShouldQueue
                 ->timeout(657384573485730)
                 ->post('https://api.edenai.run/v2/image/search/upload_image', [
                     'providers' => 'sentisight',
-                    'image_name' => $newFilename
+                    'image_name' => $image->unique_number
                 ]);
 
             dump($response->json());
