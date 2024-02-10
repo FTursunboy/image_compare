@@ -81,23 +81,20 @@ class ApiController extends BaseController
         if ($request->hasFile('file')) {
             $file = $request->file('file');
 
+            // Создаем экземпляр Image с использованием библиотеки Intervention Image
             $image = \Intervention\Image\Facades\Image::make($file->get());
 
-            $image->trim()->resizeCanvas($image->width(), $image->height(), 'center', false, '#f0f0f0');
-
-
-            // Обесцвечиваем изображение
-            $image->greyscale();
+            // Устанавливаем прозрачный фон
+            $image->encode('png', 0);
 
             // Генерируем уникальное имя файла
             $original_name = $file->getClientOriginalName();
             $file_name = time() . rand(1, 99);
 
-            // Сохраняем обработанное изображение
-            $image->save(public_path('uploads/' . $file_name . '.jpg'));
+            // Сохраняем изображение с прозрачным фоном
+            $image->save(public_path('uploads/' . $file_name . '.png'));
 
-            $path = 'uploads/' . $file_name . '.jpg';
-
+            $path = 'uploads/' . $file_name . '.png';
 
             $file1 = \Illuminate\Support\Facades\File::get(public_path($path));
             $similarImages = [];
