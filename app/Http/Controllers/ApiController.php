@@ -51,22 +51,6 @@ class ApiController extends BaseController
 
             $file = \Illuminate\Support\Facades\File::get($imagePath);
 
-            $originalFilename = $image->file_name;
-
-
-            $cleanedFilename = str_replace('.', '', $image->file_name);
-            $cleanedFilename = strtolower($cleanedFilename);
-
-
-            $extension = pathinfo($originalFilename, PATHINFO_EXTENSION);
-
-            if (!empty($extension)) {
-                $newFilename = substr_replace($cleanedFilename, '.', -strlen($extension), 0);
-            } else {
-                $newFilename = $cleanedFilename;
-            }
-
-
             $response = Http::withHeaders([
                 'accept' => 'application/json',
                 'authorization' => 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiYTJjMDJkNGEtZjgwNC00M2UxLThhNzQtMjAzZGViNWVlYTk0IiwidHlwZSI6ImFwaV90b2tlbiJ9.iP-Ga-VPn1TmjfiA0qLAO_4Y5lgJ4-ZppRkw7uDsWGI',
@@ -75,7 +59,7 @@ class ApiController extends BaseController
                 ->timeout(657384573485730)
                 ->post('https://api.edenai.run/v2/image/search/upload_image', [
                     'providers' => 'sentisight',
-                    'image_name' => $newFilename
+                    'image_name' => $image->unique_number
                 ]);
             if ($response->successful()) {
                 $image->sent = true;
