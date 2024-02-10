@@ -24,7 +24,7 @@
                       <a  class="nav-link" href="{{route('index')}}">Главная </a>
                   </li>
                   <li class="nav-item active">
-                      <a class="nav-link" href="{{route('welcome')}}">Сравнение картинок</a>
+                      <a class="nav-link" href="{{route('welcome')}}">Сравнение картинок с ИИ</a>
                   </li>
                   <li class="nav-item active">
                       <a class="nav-link" href="{{route('welcome.hash')}}">Сравнение картинок с хешом</a>
