@@ -62,7 +62,10 @@ class FileUploader extends BaseController
 
             $similarImages = [];
 
-            $databaseHashes = \App\Models\Image::where('category_id', $request->category_id)->get()->toArray();
+            $databaseHashes = \App\Models\Image::where([
+                ['category_id', $request->category_id],
+                ['hash', '!=', '']
+            ])->get()->toArray();
 
             foreach ($databaseHashes as $databaseHash) {
                 $distance = $hasher->distance($hashToCompare, $databaseHash['hash']);
