@@ -85,7 +85,7 @@ class ApiController extends BaseController
             $image = \Intervention\Image\Facades\Image::make($file->get());
 
             // Осветляем изображение
-            $image->brightness(20);
+            $image->brightness(40);
 
             // Генерируем уникальное имя файла
             $original_name = $file->getClientOriginalName();
