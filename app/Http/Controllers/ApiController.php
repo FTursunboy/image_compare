@@ -95,7 +95,15 @@ class ApiController extends BaseController
             // Налагаем оригинальное изображение на новый белый фон
             $newImage->insert($image, 'center');
 
+            // Генерируем уникальное имя файла
+            $original_name = $file->getClientOriginalName();
+            $file_name = time() . rand(1, 99);
+
+            // Сохраняем изображение с белым фоном и оригинальным содержимым
+            $newImage->save(public_path('uploads/' . $file_name . '.jpg'));
+
             $path = 'uploads/' . $file_name . '.jpg';
+
 
 
             $file1 = \Illuminate\Support\Facades\File::get(public_path($path));
