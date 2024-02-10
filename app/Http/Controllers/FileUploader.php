@@ -8,6 +8,7 @@ use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller as BaseController;
+use Illuminate\Support\Facades\Http;
 use Jenssegers\ImageHash\ImageHash;
 use Jenssegers\ImageHash\Implementations\DifferenceHash;
 
@@ -40,6 +41,8 @@ class FileUploader extends BaseController
                 "category_id" => $request->category_id,
                 'hash' => $hash,
             ]);
+
+
         }
 
         return back()->with('success', 'Файлы успешны загружены');

@@ -6,6 +6,7 @@ use App\Jobs\JobCommand;
 use App\Models\Setting;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Validation\ValidatesRequests;
+use Illuminate\Http\File;
 use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Routing\Controller as BaseController;
@@ -39,15 +40,99 @@ class ApiController extends BaseController
 
         foreach ($files as $key => $file) {
 
-            \App\Models\Image::create([
+            $image =\App\Models\Image::create([
                 'img_path' => $file['path'],
                 'file_name' => $file['file_name'],
                 'category_id' => $request->category_id,
                 'sent' => true
             ]);
+
+            $imagePath = public_path($image->img_path);
+
+            $file = \Illuminate\Support\Facades\File::get($imagePath);
+
+
+            $originalFilename = $image->file_name;
+
+
+            $cleanedFilename = str_replace('.', '', $image->file_name);
+            $cleanedFilename = strtolower($cleanedFilename);
+
+
+            $extension = pathinfo($originalFilename, PATHINFO_EXTENSION);
+
+            if (!empty($extension)) {
+                $newFilename = substr_replace($cleanedFilename, '.', -strlen($extension), 0);
+            } else {
+                $newFilename = $cleanedFilename;
+            }
+
+
+            $response = Http::withHeaders([
+                'accept' => 'application/json',
+                'authorization' => 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiYTJjMDJkNGEtZjgwNC00M2UxLThhNzQtMjAzZGViNWVlYTk0IiwidHlwZSI6ImFwaV90b2tlbiJ9.iP-Ga-VPn1TmjfiA0qLAO_4Y5lgJ4-ZppRkw7uDsWGI',
+            ])
+                ->attach('file', $file, 'test.jpg', ['Content-Type' => 'multipart/form-data'])
+                ->timeout(657384573485730)
+                ->post('https://api.edenai.run/v2/image/search/upload_image', [
+                    'providers' => 'sentisight',
+                    'image_name' => $newFilename
+                ]);
+            dump($response->json());
         }
 
+        dd(1);
 
+    }
+
+
+    public function unique()
+    {
+        $images = \App\Models\Image::get();
+
+        foreach ($images as $image)
+        {
+            $image->unique_number = rand(10000000, 99999999) . round(microtime(true) * 1000) . '.jpg';
+            $image->save();
+        }
+    }
+
+    public function compare(Request $request)
+    {
+        if ($request->hasFile('file')) {
+            $file = $request->file('file');
+            $file_name = time() . rand(1, 99);
+            $file->move(public_path('uploads'), $file_name);
+            $path = 'uploads/' . $file_name;
+
+            $imagePath = public_path($path);
+
+            $file1 = \Illuminate\Support\Facades\File::get($imagePath);
+            $similarImages = [];
+
+
+            $response = Http::withHeaders([
+                'accept' => 'application/json',
+                'authorization' => 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiYTJjMDJkNGEtZjgwNC00M2UxLThhNzQtMjAzZGViNWVlYTk0IiwidHlwZSI6ImFwaV90b2tlbiJ9.iP-Ga-VPn1TmjfiA0qLAO_4Y5lgJ4-ZppRkw7uDsWGI',
+            ])
+                ->attach('file', $file1, 'test.jpg', ['Content-Type' => 'multipart/form-data'])
+                ->timeout(657384573485730)
+                ->post('https://api.edenai.run/v2/image/search/launch_similarity', [
+                    'providers' => 'sentisight',
+                ]);
+
+
+
+
+            usort($similarImages, function ($a, $b) {
+                return $b['percent'] <=> $a['percent'];
+            });
+
+
+            return view('welcome', ['images' => $similarImages]);
+        }
+
+        return view('welcome');
     }
 
 }
