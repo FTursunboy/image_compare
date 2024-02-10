@@ -125,7 +125,8 @@ class ApiController extends BaseController
 
             foreach ($result as $res) {
                 $image = \App\Models\Image::where('unique_number', $res['image_name'])->first();
-                if (!$image) {
+
+                if ($image) {
                     $similarImages[] = [
                         'img_path' => $image->img_path,
                         'image_name' => $image->file_name,
