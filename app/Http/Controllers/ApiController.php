@@ -29,7 +29,6 @@ class ApiController extends BaseController
     public function upload(Request $request) {
         if ($request->file('files')) {
             foreach ($request->file('files') as $key => $file) {
-
                 $file_name = time() . rand(1, 99) . '.' . $file->extension();
                 $original_name = $file->getClientOriginalName();
                 $file->move(public_path('uploads'), $file_name);
@@ -64,11 +63,12 @@ class ApiController extends BaseController
             if ($response->successful()) {
                 $image->sent = true;
                 $image->save();
-            }
-            dump($response->json());
-        }
 
-        dd(1);
+            }
+
+        }
+        return back()->with('success', 'Файлы успешны загружены');
+
 
     }
 
