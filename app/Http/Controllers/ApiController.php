@@ -83,7 +83,7 @@ class ApiController extends BaseController
 
             $image = \Intervention\Image\Facades\Image::make($file->get());
 
-            $image->trim()->resizeCanvas($image->width(), $image->height(), 'center', false, 'red');
+            $image->trim()->resizeCanvas($image->width(), $image->height(), 'center', false, '#f0f0f0');
 
 
             // Обесцвечиваем изображение
