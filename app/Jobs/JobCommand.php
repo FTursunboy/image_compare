@@ -48,8 +48,6 @@ class JobCommand implements ShouldQueue
                     'image_name' => $image->unique_number
                 ]);
 
-            dump($response->json());
-
             if ($response->successful()) {
                 $image->sent = true;
                 $image->save();

@@ -5,7 +5,9 @@ namespace Database\Seeders;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use App\Models\Category;
 use App\Models\Setting;
+use App\Models\User;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
 
 class DatabaseSeeder extends Seeder
 {
@@ -21,14 +23,22 @@ class DatabaseSeeder extends Seeder
         //     'email' => 'test@example.com',
         // ]);
 
-        Setting::create([
-            'percent' => 94
-        ]);
+//        Setting::create([
+//            'percent' => 94
+//        ]);
+//
+//        Category::insert([
+//            ['name' => 'Кольца'],
+//            ['name' => 'Сережки'],
+//            ['name' => 'Цепочки']
+//        ]);
+//
+//
 
-        Category::insert([
-            ['name' => 'Кольца'],
-            ['name' => 'Сережки'],
-            ['name' => 'Цепочки']
+        User::create([
+            'name' => '123',
+            'email' => 'admin@gmail.com',
+            'password' => Hash::make('password')
         ]);
     }
 }

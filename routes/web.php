@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -14,20 +15,30 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('index');
-})->name('index');
-Route::get('/setting', function () {
-    return view('setting');
-})->name('setting');
-Route::get('/file', function () {
     return view('welcome');
-})->name('welcome');
+})->name('index');
 
-Route::get('/c', [\App\Http\Controllers\Controller::class, 'index']);
-Route::post('/upload', [\App\Http\Controllers\ApiController::class, 'upload'])->name('file.store');
-Route::post('/compare', [\App\Http\Controllers\ApiController::class, 'compare'])->name('file.compare');
-Route::get('/unique', [\App\Http\Controllers\ApiController::class, 'unique']);
-Route::post('/setting', [\App\Http\Controllers\FileUploader::class, 'setting'])->name('settings');
-Route::get('/change', [\App\Http\Controllers\FileUploader::class, 'change'])->name('change');
-Route::get('/cutImages/{hash}/{count}', [\App\Http\Controllers\FileUploader::class, 'cutImageArray'])->name('cutImage');
-Route::get('/123', [\App\Http\Controllers\ApiController::class, 'index'])->name('cutImage');
+Route::group(['middleware' => ['auth', 'verified']], function() {
+
+    Route::get('/', function () {
+        return view('index');
+    })->name('index');
+    Route::get('/setting', function () {
+        return view('setting');
+    })->name('setting');
+    Route::get('/file', function () {
+        return view('welcome');
+    })->name('welcome');
+
+    Route::get('/c', [\App\Http\Controllers\Controller::class, 'index']);
+    Route::post('/upload', [\App\Http\Controllers\ApiController::class, 'upload'])->name('file.store');
+    Route::post('/compare', [\App\Http\Controllers\ApiController::class, 'compare'])->name('file.compare');
+    Route::get('/unique', [\App\Http\Controllers\ApiController::class, 'unique']);
+    Route::post('/setting', [\App\Http\Controllers\FileUploader::class, 'setting'])->name('settings');
+    Route::get('/change', [\App\Http\Controllers\FileUploader::class, 'change'])->name('change');
+    Route::get('/cutImages/{hash}/{count}', [\App\Http\Controllers\FileUploader::class, 'cutImageArray'])->name('cutImage');
+    Route::get('/123', [\App\Http\Controllers\ApiController::class, 'index'])->name('cutImage');
+});
+
+
+require __DIR__.'/auth.php';

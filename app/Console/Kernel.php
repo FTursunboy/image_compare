@@ -15,7 +15,6 @@ class Kernel extends ConsoleKernel
         $schedule->command('send:image')->everyMinute();
     }
 
-
     /**
      * Register the commands for the application.
      */

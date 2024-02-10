@@ -39,6 +39,11 @@
 
 <div class="container" style="margin-top: 50px">
     <div class="panel panel-primary">
+        @if ($message = Session::get('error'))
+            <div class="alert alert-danger alert-block">
+                <strong>{{ $message }}</strong>
+            </div>
+        @endif
         <div class="panel-heading">
             <h2>Добро пожаловать</h2>
         </div>

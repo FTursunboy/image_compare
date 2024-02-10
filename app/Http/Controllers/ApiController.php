@@ -20,11 +20,6 @@ class ApiController extends BaseController
 {
     use AuthorizesRequests, ValidatesRequests;
 
-    public function index()
-    {
-        JobCommand::dispatch();
-    }
-
 
     public function upload(Request $request) {
         if ($request->file('files')) {
@@ -73,36 +68,26 @@ class ApiController extends BaseController
     }
 
 
-    public function unique()
-    {
-        $images = \App\Models\Image::get();
-
-        foreach ($images as $image)
-        {
-            $image->unique_number = rand(10000000, 99999999) . round(microtime(true) * 1000) . '.jpg';
-            $image->save();
-        }
-    }
 
     public function compare(Request $request)
     {
         if ($request->hasFile('file')) {
-            $file = $request->file('file');
-            $file_name = time() . rand(1, 99);
-            $file->move(public_path('uploads'), $file_name);
-            $path = 'uploads/' . $file_name;
-
-            $imagePath = public_path($path);
-
-            $file1 = \Illuminate\Support\Facades\File::get($imagePath);
-            $similarImages = [];
+//            $file = $request->file('file');
+//            $file_name = time() . rand(1, 99);
+//            $file->move(public_path('uploads'), $file_name);
+//            $path = 'uploads/' . $file_name;
+//
+//            $imagePath = public_path($path);
+//
+//            $file1 = \Illuminate\Support\Facades\File::get($imagePath);
+//            $similarImages = [];
 
 
             $response = Http::withHeaders([
                 'accept' => 'application/json',
                 'authorization' => 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiYTJjMDJkNGEtZjgwNC00M2UxLThhNzQtMjAzZGViNWVlYTk0IiwidHlwZSI6ImFwaV90b2tlbiJ9.iP-Ga-VPn1TmjfiA0qLAO_4Y5lgJ4-ZppRkw7uDsWGI',
             ])
-                ->attach('file', $file1, 'test.jpg', ['Content-Type' => 'multipart/form-data'])
+                ->attach('file', $request->file('file'), 'test.jpg', ['Content-Type' => 'multipart/form-data'])
                 ->timeout(657384573485730)
                 ->post('https://api.edenai.run/v2/image/search/launch_similarity', [
                     'providers' => 'sentisight',
@@ -113,21 +98,24 @@ class ApiController extends BaseController
 
 
                 foreach ($result as $res) {
-                    $image = \App\Models\Image::where('unique_number', $res['image_name'])->first();
+                    $image = \App\Models\Image::where([
+                        ['unique_number', $res['image_name']],
+                        ['category_id' => $request->category_id]
+                            ])->first();
 
                     if ($image) {
                         $similarImages[] = [
                             'img' => $image->img_path,
-                            'file_name' => $image->file_name,
+                            'file_name' => $image->unque_number,
                             'percent' => $res['score']
                         ];
                     }
                 }
                 return view('welcome', ['images' => $similarImages]);
             }
-
-
-
+            else {
+                return redirect()->back()->with('error', 'Превышен лимит запросов');
+            }
 
         }
 
