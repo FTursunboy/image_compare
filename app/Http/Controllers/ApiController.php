@@ -121,12 +121,18 @@ class ApiController extends BaseController
                     'providers' => 'sentisight',
                 ]);
 
+            $result = $response['sentisight']['items'];
 
+            foreach ($result as $res) {
+                $image = \App\Models\Image::where('unique_number', $res['image_name'])->first();
+                 $similarImages[] = [
+                     'img_path' => $image->img_path,
+                     'image_name' => $image->file_name,
+                     'percent' => $res['score']
+                 ];
+            }
 
-
-            usort($similarImages, function ($a, $b) {
-                return $b['percent'] <=> $a['percent'];
-            });
+            dd($similarImages);
 
 
             return view('welcome', ['images' => $similarImages]);
