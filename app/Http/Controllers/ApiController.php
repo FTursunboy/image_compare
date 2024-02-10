@@ -135,7 +135,6 @@ class ApiController extends BaseController
                 }
             }
 
-            dd($similarImages);
 
 
             return view('welcome', ['images' => $similarImages]);
