@@ -75,22 +75,22 @@ class ApiController extends BaseController
     public function compare(Request $request)
     {
         if ($request->hasFile('file')) {
-//            $file = $request->file('file');
-//            $file_name = time() . rand(1, 99);
-//            $file->move(public_path('uploads'), $file_name);
-//            $path = 'uploads/' . $file_name;
-//
-//            $imagePath = public_path($path);
-//
-//            $file1 = \Illuminate\Support\Facades\File::get($imagePath);
-//            $similarImages = [];
+            $file = $request->file('file');
+            $file_name = time() . rand(1, 99);
+            $file->move(public_path('uploads'), $file_name);
+            $path = 'uploads/' . $file_name;
+
+            $imagePath = public_path($path);
+
+            $file1 = \Illuminate\Support\Facades\File::get($imagePath);
+            $similarImages = [];
 
 
             $response = Http::withHeaders([
                 'accept' => 'application/json',
                 'authorization' => 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiYTJjMDJkNGEtZjgwNC00M2UxLThhNzQtMjAzZGViNWVlYTk0IiwidHlwZSI6ImFwaV90b2tlbiJ9.iP-Ga-VPn1TmjfiA0qLAO_4Y5lgJ4-ZppRkw7uDsWGI',
             ])
-                ->attach('file', $request->file('file'), 'test.jpg', ['Content-Type' => 'multipart/form-data'])
+                ->attach('file', $file1, 'test.jpg', ['Content-Type' => 'multipart/form-data'])
                 ->timeout(657384573485730)
                 ->post('https://api.edenai.run/v2/image/search/launch_similarity', [
                     'providers' => 'sentisight',
@@ -98,8 +98,6 @@ class ApiController extends BaseController
 
             if ($response->successful()) {
 
-                dump($response);
-                dd($response->json());
                 $result = $response->json()['sentisight']['items'];
 
 
