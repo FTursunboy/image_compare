@@ -40,7 +40,7 @@ class ResizeImagesJob implements ShouldQueue
 
             $resized_image->resize(400, 400);
 
-            $file_name_of_resized_image = 'uploads/' . time() . 'jpg';
+            $file_name_of_resized_image = 'uploads/' . time() . '.jpg';
 
             $resized_image->save(public_path( $file_name_of_resized_image));
 
