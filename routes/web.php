@@ -41,6 +41,7 @@ Route::group(['middleware' => ['auth', 'verified']], function() {
     Route::get('/change', [\App\Http\Controllers\FileUploader::class, 'change'])->name('change');
 
     Route::post('hash/compare', [\App\Http\Controllers\FileUploader::class, 'compare'])->name('file.compare.hash');
+    Route::get('resize', [\App\Http\Controllers\ApiController::class, 'resize_image']);
 
 });
 
