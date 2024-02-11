@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Jobs\ResizeImagesJob;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Http\Request;
@@ -142,21 +143,7 @@ class ApiController extends BaseController
 
     public function resize_image() :void
     {
-        $images_to_resize = Image::get();
-
-        foreach ($images_to_resize as $image) {
-
-            $resized_image = InterventionImage::make(File::get(public_path($image->img_path)));
-
-            $resized_image->resize(400, 400);
-
-            $file_name_of_resized_image = 'uploads/' . time() . 'jpg';
-
-            $resized_image->save(public_path( $file_name_of_resized_image));
-
-            $image->new_file_path = $file_name_of_resized_image;
-            $image->save();
-        }
+        ResizeImagesJob::dispatch();
     }
 
 }
