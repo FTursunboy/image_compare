@@ -2,18 +2,16 @@
 
 namespace App\Http\Controllers;
 
-use App\Jobs\JobCommand;
-use App\Models\Setting;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Validation\ValidatesRequests;
-use Illuminate\Http\File;
 use Illuminate\Http\Request;
-use Illuminate\Http\UploadedFile;
 use Illuminate\Routing\Controller as BaseController;
-use Illuminate\Support\Facades\Auth;
+use \Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Http;
 use Jenssegers\ImageHash\ImageHash;
 use Jenssegers\ImageHash\Implementations\DifferenceHash;
+use \Intervention\Image\Facades\Image as InterventionImage;
+use App\Models\Image;
 
 
 class ApiController extends BaseController
@@ -81,22 +79,26 @@ class ApiController extends BaseController
         if ($request->hasFile('file')) {
             $file = $request->file('file');
 
-            // Создаем экземпляр Image с использованием библиотеки Intervention Image
-            $image = \Intervention\Image\Facades\Image::make($file->get());
+            $file_name_of_original_image = time() . rand(1, 99) . '.' . $file->extension();
 
-            // Устанавливаем прозрачный фон
-            $image->encode('png', 0);
+            $file->move(public_path('uploads'), $file_name_of_original_image);
+            $path_of_original_image = 'uploads/' . $file_name_of_original_image;
 
-            // Генерируем уникальное имя файла
-            $original_name = $file->getClientOriginalName();
-            $file_name = time() . rand(1, 99);
 
-            // Сохраняем изображение с прозрачным фоном
-            $image->save(public_path('uploads/' . $file_name . '.png'));
+            $resized_image = InterventionImage::make(File::get(public_path($path_of_original_image)));
 
-            $path = 'uploads/' . $file_name . '.png';
+            $resized_image->brightness(22);
 
-            $file1 = \Illuminate\Support\Facades\File::get(public_path($path));
+            $resized_image->resize(400, 400);
+
+
+            $file_name_of_resized_image = time();
+
+            $resized_image->save(public_path('uploads/' . $file_name_of_resized_image . '.jpg'));
+
+            $path_of_resized_image = 'uploads/' . $file_name_of_resized_image . '.jpg';
+
+            $file_for_ai = File::get(public_path($path_of_resized_image));
             $similarImages = [];
 
 
@@ -104,7 +106,7 @@ class ApiController extends BaseController
                 'accept' => 'application/json',
                 'authorization' => 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiYTJjMDJkNGEtZjgwNC00M2UxLThhNzQtMjAzZGViNWVlYTk0IiwidHlwZSI6ImFwaV90b2tlbiJ9.iP-Ga-VPn1TmjfiA0qLAO_4Y5lgJ4-ZppRkw7uDsWGI',
             ])
-                ->attach('file', $file1, 'test.jpg', ['Content-Type' => 'multipart/form-data'])
+                ->attach('file', $file_for_ai, 'test.jpg', ['Content-Type' => 'multipart/form-data'])
                 ->timeout(657384573485730)
                 ->post('https://api.edenai.run/v2/image/search/launch_similarity', [
                     'providers' => 'sentisight',
@@ -116,7 +118,7 @@ class ApiController extends BaseController
 
 
                 foreach ($result as $res) {
-                    $image = \App\Models\Image::where('unique_number', $res['image_name'])->first();
+                    $image = Image::where('unique_number', $res['image_name'])->first();
 
                     if ($image) {
                         $similarImages[] = [
@@ -126,15 +128,35 @@ class ApiController extends BaseController
                         ];
                     }
                 }
-                return view('welcome', ['images' => $similarImages, 'image' => $path, 'name' => $original_name]);
+                return view('welcome', ['images' => $similarImages, 'image' => $path_of_resized_image, 'name' => "f"]);
             }
             else {
                 return redirect()->back()->with('error', 'Превышен лимит запросов');
             }
 
-        }
+     }
 
         return view('welcome');
+    }
+
+
+    public function resize_image() :void
+    {
+        $images_to_resize = Image::get();
+
+        foreach ($images_to_resize as $image) {
+
+            $resized_image = InterventionImage::make(File::get(public_path($image->img_path)));
+
+            $resized_image->resize(400, 400);
+
+            $file_name_of_resized_image = 'uploads/' . time() . 'jpg';
+
+            $resized_image->save(public_path( $file_name_of_resized_image));
+
+            $image->new_file_path = $file_name_of_resized_image;
+            $image->save();
+        }
     }
 
 }

@@ -84,10 +84,10 @@
     <div class="panel panel-primary">
         @if(isset($image))
         <div class="panell" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px">
-            <div  style="border: 2px solid #CCB399FF; border-radius: 8px; padding: 10px">
+            <div >
                 <p><strong>Ваше изображение:</strong> {{$name}}</span></p>
 
-                <img style="max-height: 400px; max-width: 30%;" src="{{ asset($image) }}" alt="Image">
+                <img  src="{{ asset($image) }}" alt="Image">
             </div>
         </div>
         @endif
