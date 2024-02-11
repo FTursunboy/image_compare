@@ -88,10 +88,7 @@ class ApiController extends BaseController
 
             $resized_image = InterventionImage::make(File::get(public_path($path_of_original_image)));
 
-            $resized_image->brightness(22);
-
             $resized_image->resize(400, 400);
-
 
             $file_name_of_resized_image = time();
 
@@ -102,28 +99,18 @@ class ApiController extends BaseController
             $file_for_ai = File::get(public_path($path_of_resized_image));
             $similarImages = [];
 
-
-            $response = Http::withHeaders([
-                'accept' => 'application/json',
-                'authorization' => 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiYTJjMDJkNGEtZjgwNC00M2UxLThhNzQtMjAzZGViNWVlYTk0IiwidHlwZSI6ImFwaV90b2tlbiJ9.iP-Ga-VPn1TmjfiA0qLAO_4Y5lgJ4-ZppRkw7uDsWGI',
-            ])
-                ->attach('file', $file_for_ai, 'test.jpg', ['Content-Type' => 'multipart/form-data'])
-                ->timeout(657384573485730)
-                ->post('https://api.edenai.run/v2/image/search/launch_similarity', [
-                    'providers' => 'sentisight',
-                ]);
+            $response = $this->compare_ai($file_for_ai);
 
             if ($response->successful()) {
 
                 $result = $response->json()['sentisight']['items'];
-
 
                 foreach ($result as $res) {
                     $image = Image::where('unique_number', $res['image_name'])->first();
 
                     if ($image) {
                         $similarImages[] = [
-                            'img' => $image->img_path,
+                            'img' => $image->new_file_path,
                             'file_name' => $image->file_name,
                             'percent' => $res['score']
                         ];
@@ -146,5 +133,19 @@ class ApiController extends BaseController
         ResizeImagesJob::dispatch();
     }
 
+
+    private function compare_ai($file_for_ai)
+    {
+       return Http::withHeaders([
+            'accept' => 'application/json',
+            'authorization' => 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiYTJjMDJkNGEtZjgwNC00M2UxLThhNzQtMjAzZGViNWVlYTk0IiwidHlwZSI6ImFwaV90b2tlbiJ9.iP-Ga-VPn1TmjfiA0qLAO_4Y5lgJ4-ZppRkw7uDsWGI',
+        ])
+            ->attach('file', $file_for_ai, 'test.jpg', ['Content-Type' => 'multipart/form-data'])
+            ->timeout(657384573485730)
+            ->post('https://api.edenai.run/v2/image/search/launch_similarity', [
+                'providers' => 'sentisight',
+            ]);
+
+    }
 }
 
