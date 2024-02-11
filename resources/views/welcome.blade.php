@@ -101,7 +101,7 @@
                 @foreach($images as $image)
                     <div  style="border: 2px solid #CCB399FF; border-radius: 8px; padding: 10px">
                         <p><strong>Процент схожости:</strong> {{ number_format((float)$image['percent'], 2, '.', '') }} %<br> <span><strong>Название файла:</strong> {{$image['file_name']}}</span></p>
-                        <img style="max-height: 500px; max-width: 100%;" src="{{ asset($image['img']) }}" alt="Image">
+                        <img src="{{ asset($image['img']) }}" alt="Image">
                     </div>
                 @endforeach
             </div>
