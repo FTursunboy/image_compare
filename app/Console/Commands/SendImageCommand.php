@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Jobs\JobCommand;
+use App\Jobs\SentToAiJob;
 use Illuminate\Console\Command;
 
 class SendImageCommand extends Command
@@ -26,6 +27,6 @@ class SendImageCommand extends Command
      */
     public function handle()
     {
-        JobCommand::dispatch();
+        SentToAiJob::dispatch();
     }
 }
