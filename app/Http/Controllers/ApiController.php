@@ -88,6 +88,8 @@ class ApiController extends BaseController
 
             $resized_image = InterventionImage::make(File::get(public_path($path_of_original_image)));
 
+            $resized_image->brightness(22);
+
             $resized_image->resize(400, 400);
 
             $file_name_of_resized_image = time();
